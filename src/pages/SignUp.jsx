@@ -6,6 +6,11 @@ import {
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
+import {
+  setDoc,
+  doc,
+  serverTimestamp
+} from 'firebase/firestore';
 import { db } from '../config/firebase.config';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -40,7 +45,7 @@ const SignUp = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    //*A promise
+    //*REGISTERING THE USER WITH A PROMISE
     try {
       const auth = getAuth();
 
@@ -58,6 +63,21 @@ const SignUp = () => {
       // *Get the current user from auth
       // ! No const here needed,since in the trycatch
       updateProfile(auth.currentUser, { displayName: name });
+
+      //*STORING DATA TO FIRESTORE DB
+      //*Copy of state object ie name, email, password
+      const formDataCopy = { ...formData };
+      //*Need to delete pw from object copy so it doesn't get stored in the db
+      delete formDataCopy.password;
+      //*Add in timestamp to copied state object
+      formDataCopy.timestamp = serverTimestamp();
+
+      // *UPDATING THE DB WITH setDoc FOR USER NAME AND EMAIL, ID, AND TIMESTAMP
+      // The first argument doc in setDoc takes in db from my config folder, and a collection name 'users' and user id from user variable.
+      // The second argument takes in the data to be stored, formDataCopy
+      // setDoc returns a promise
+      await setDoc(doc(db, 'users', user.uid), formDataCopy);
+
 
       //Redirect to home page after submission
       navigate('/');
