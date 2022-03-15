@@ -1,4 +1,13 @@
 import { useState } from 'react';
+
+//*Firebase Auth from docs v9
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile
+} from 'firebase/auth';
+import { db } from '../config/firebase.config';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
 
@@ -11,7 +20,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    name:''
+    name: ''
   });
   // destructure for for use
   const { name, email, password } = formData;
@@ -26,6 +35,36 @@ const SignUp = () => {
     }));
   };
 
+  // *Setting up Firebase Auth,  a promise based submit with async await
+  // * createUserWithEmailAndPassword returns a promise
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    //*A promise
+    try {
+      const auth = getAuth();
+
+      //*Takes in auth from firebase and email and password from this form
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      //* Get the user from the userCredential
+      const user = userCredential.user;
+
+      // *This function takes in the current user and object, we are updating the display name
+      // *Get the current user from auth
+      // ! No const here needed,since in the trycatch
+      updateProfile(auth.currentUser, { displayName: name });
+
+      //Redirect to home page after submission
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className='pageContainer'>
@@ -33,8 +72,8 @@ const SignUp = () => {
           <p className='pageHeader'></p>
         </header>
         <main>
-          <form>
-          <input
+          <form onSubmit={onSubmit}>
+            <input
               type='text'
               className='nameInput'
               value={name}
