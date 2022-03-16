@@ -1,16 +1,15 @@
 import { useState } from 'react';
 
 //*Firebase Auth from docs v9
+// https://firebase.google.com/docs/auth/web/start
 import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
-import {
-  setDoc,
-  doc,
-  serverTimestamp
-} from 'firebase/firestore';
+
+// https://firebase.google.com/docs/firestore/manage-data/add-data
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase.config';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -73,11 +72,11 @@ const SignUp = () => {
       formDataCopy.timestamp = serverTimestamp();
 
       // *UPDATING THE DB WITH setDoc FOR USER NAME AND EMAIL, ID, AND TIMESTAMP
+      // https://firebase.google.com/docs/firestore/manage-data/add-data
       // The first argument doc in setDoc takes in db from my config folder, and a collection name 'users' and user id from user variable.
       // The second argument takes in the data to be stored, formDataCopy
       // setDoc returns a promise
       await setDoc(doc(db, 'users', user.uid), formDataCopy);
-
 
       //Redirect to home page after submission
       navigate('/');
