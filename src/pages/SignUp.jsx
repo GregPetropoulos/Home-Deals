@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+// https://www.npmjs.com/package/react-toastify
+import { toast } from 'react-toastify';
+
 //*Firebase Auth from docs v9
 // https://firebase.google.com/docs/auth/web/start
 import {
@@ -81,7 +84,7 @@ const SignUp = () => {
       //Redirect to home page after submission
       navigate('/');
     } catch (error) {
-      console.log(error);
+toast.error('Something went wrong with registration')
     }
   };
   return (

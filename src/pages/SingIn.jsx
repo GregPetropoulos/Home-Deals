@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
+
+// https://www.npmjs.com/package/react-toastify
+import { toast } from 'react-toastify';
+
+// https://firebase.google.com/docs/auth/web/start
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
@@ -42,7 +47,7 @@ const SignIn = () => {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
+      toast.error('Bad User Credentials')
     }
   };
 

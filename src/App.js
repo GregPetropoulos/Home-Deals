@@ -1,4 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// https://www.npmjs.com/package/react-toastify
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Navbar from './components/Navbar';
 import Explorer from './pages/Explorer';
 import Offers from './pages/Offers';
@@ -6,6 +11,8 @@ import Profiles from './pages/Profiles';
 import ForgotPassword from './pages/ForgotPassword';
 import SignIn from './pages/SingIn';
 import SignUp from './pages/SignUp';
+
+
 
 function App() {
   return (
@@ -22,6 +29,7 @@ function App() {
         </Routes>
       <Navbar/>
       </Router>
+      <ToastContainer/>
     </>
   );
 }
