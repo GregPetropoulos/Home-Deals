@@ -10,6 +10,9 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
 
+import OAuth from '../components/OAuth';
+
+
 const SignIn = () => {
   // used to control the input type and visibilityIcon (eyeball)
   const [showPassword, setShowPassword] = useState(false);
@@ -97,7 +100,7 @@ const SignIn = () => {
               </button>
             </div>
           </form>
-          {/* Google OAUTH */}
+<OAuth/>
           <Link to='/sign-up' className='registerLink'>
             Sign Up Instead
           </Link>

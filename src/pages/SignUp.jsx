@@ -20,6 +20,9 @@ import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRig
 
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
 
+import OAuth from '../components/OAuth';
+
+
 const SignUp = () => {
   // used to control the input type and visibilityIcon (eyeball)
   const [showPassword, setShowPassword] = useState(false);
@@ -141,7 +144,8 @@ toast.error('Something went wrong with registration')
               </button>
             </div>
           </form>
-          {/* Google OAUTH */}
+          <OAuth/>
+
           <Link to='/sign-in' className='registerLink'>
             Sign In Instead
           </Link>
