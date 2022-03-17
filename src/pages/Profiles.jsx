@@ -1,4 +1,3 @@
-
 // Email is difficult to change since firestore uses it as authentication
 import { getAuth, updateProfile } from 'firebase/auth';
 import { useState } from 'react';
@@ -32,18 +31,18 @@ const Profiles = () => {
     try {
       // check the current users name is not the same name entered the it will be updated and stored in the firestore db
       if (auth.currentUser.displayName !== name) {
-        // *UPDATE NAME 
+        // *UPDATE NAME
         // takes in 2 arguments current user and the object to update, will return a promise
         await updateProfile(auth.currentUser, {
           displayName: name
         });
         // * STORE IN DB
         // find db with users collection with uid of current user and update the name
-        const userRef= doc( db, 'users', auth.currentUser.uid)
-        await updateDoc(userRef, {name})
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        await updateDoc(userRef, { name });
       }
     } catch (error) {
-      toast.error('Could not update profile details')
+      toast.error('Could not update profile details');
     }
   };
 

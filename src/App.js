@@ -12,24 +12,30 @@ import ForgotPassword from './pages/ForgotPassword';
 import SignIn from './pages/SingIn';
 import SignUp from './pages/SignUp';
 
-
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path='/'element={<Explorer />} />
-          <Route path='/offers'element={<Offers />} />
-          <Route path='/profiles'element={<Profiles />} />
-          <Route path='/sign-in'element={<SignIn />} />
-          <Route path='/sign-up'element={<SignUp />} />
+          <Route path='/' element={<Explorer />} />
+          <Route path='/offers' element={<Offers />} />
+
+          {/* nested private route */}
+          <Route path='/profiles' element={<PrivateRoute />}>
+            {/* This is Outlet child route */}
+            <Route path='/profiles' element={<Profiles />} />
+            
+          </Route>
+          <Route path='/sign-in' element={<SignIn />} />
+          <Route path='/sign-up' element={<SignUp />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/*' element={<h1>Error Page Does Not Exist</h1>} />
         </Routes>
-      <Navbar/>
+        <Navbar />
       </Router>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }
