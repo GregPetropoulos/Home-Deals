@@ -11,7 +11,7 @@ import Profiles from './pages/Profiles';
 import ForgotPassword from './pages/ForgotPassword';
 import SignIn from './pages/SingIn';
 import SignUp from './pages/SignUp';
-
+import Category from './pages/Category';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -21,6 +21,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Explorer />} />
           <Route path='/offers' element={<Offers />} />
+          <Route path='/category/:categoryName' element={<Category />} />
 
           {/* nested private route */}
           <Route path='/profiles' element={<PrivateRoute />}>
