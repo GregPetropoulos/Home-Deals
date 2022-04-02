@@ -14,6 +14,7 @@ import SignUp from './pages/SignUp';
 import Category from './pages/Category';
 import PrivateRoute from './components/PrivateRoute';
 import CreateListing from './pages/CreateListing';
+// console.log(process.env.REACT_APP_API_KEY)
 
 function App() {
   return (

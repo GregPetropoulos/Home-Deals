@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
 
 const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
@@ -38,7 +39,7 @@ const CreateListing = () => {
     longitude
   } = formData;
 
-  // iNITIALIZE VARIABLES SET ISMOUNT TO TRUE TO HANDLE THE MEMORY LEAK ISSUE
+  // INITIALIZE VARIABLES SET ISMOUNT TO TRUE TO HANDLE THE MEMORY LEAK ISSUE
   const auth = getAuth();
   const navigate = useNavigate();
   const isMounted = useRef(true);
@@ -54,31 +55,78 @@ const CreateListing = () => {
         }
       });
     }
-    // CLEANUP
+    //*CLEANUP
     return () => {
       isMounted.current = false;
     };
   }, [isMounted]);
 
-  const onSubmit = (e) => {
+  //  *Image upload to firebase, geocode from lat/long into address
+  const onSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
     console.log(formData);
+    //* PRICE CHECKS
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error('Discounted price must be less than regular price');
+      return;
+    }
+    //* IMAGE CHECKS
+    // images is an object by state and array by database
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error('MAX 6 images');
+      return;
+    }
+    //*GEOCODING
+    let geolocation = {};
+    let location;
+
+    if (geolocationEnabled) {
+      // must fetch call a promise
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_API_KEY}`
+      );
+
+      const data = await response.json();
+      // Data returned from google api, use optional chain and nullish coelescing 
+geolocation.lat= data.results[0]?.geometry.location.lat??0
+geolocation.lng= data.results[0]?.geometry.location.lng??0
+location=data.status === 'ZERO_RESULTS'? undefined: data.results[0]?.formatted_address
+
+if(location === undefined || location.includes('undefined')){
+  setLoading(false)
+  toast.error('Please enter a correct address')
+  return
+}
+
+} else {
+      // if not geolocation is not enabled, enter manually
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+      location = address;
+    }
+    setLoading(false);
   };
 
+  // *ON MUTATE EVENT HANDLER
   const onMutate = (e) => {
-    // When input or button clicked, checking string true and setting to actual true or false
+    // When input or button clicked, checking the string value={true} true and setting to actual true or false
     // set boolean null
     let boolean = null;
-    // check true
+    // check an set true
     if (e.target.value === 'true') {
       boolean = true;
     }
-    // check false
+    // check and set false
     if (e.target.value === 'false') {
       boolean = false;
     }
 
-    // Files
+    //*FILES
     // e.target.files is an array  of files
     if (e.target.files) {
       setFormData((prevState) => ({
@@ -86,11 +134,12 @@ const CreateListing = () => {
         images: e.target.files
       }));
     }
-    // Text/Booleans/Numbers
+    //*Text/Booleans/Numbers
+    // if the value={true} for any id set to true else set the provided value ex: bedrooms, rent etc
     if (!e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        // nullish coelescing operator?? if value on left is null use the number on roght of  ??
+        //*nullish coelescing operator?? if value on left is null use the number/text etc, on right of  ??
         [e.target.id]: boolean ?? e.target.value
       }));
     }
