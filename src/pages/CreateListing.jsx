@@ -1,5 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 
+// For the image upload from storage
+// ----------------------------------
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL
+} from 'firebase/storage';
+import { db } from '../config/firebase.config';
+import { v4 as uuidv4 } from 'uuid';
+// -------------------------------------
+
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
@@ -61,7 +73,10 @@ const CreateListing = () => {
     };
   }, [isMounted]);
 
-  //  *Image upload to firebase, geocode from lat/long into address
+  //  *ONSUBMIT-Image upload to firebase, geocode from lat/long into address
+  // * ==============================================================
+  // * ==============================================================
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -69,19 +84,28 @@ const CreateListing = () => {
 
     console.log(formData);
     //* PRICE CHECKS
+    // * ==============================================================
+
     if (discountedPrice >= regularPrice) {
       setLoading(false);
       toast.error('Discounted price must be less than regular price');
       return;
     }
+    // * ==============================================================
+
     //* IMAGE CHECKS
+    // * ==============================================================
     // images is an object by state and array by database
     if (images.length > 6) {
       setLoading(false);
       toast.error('MAX 6 images');
       return;
     }
+    // * ==============================================================
+
     //*GEOCODING
+    // * ==============================================================
+
     let geolocation = {};
     let location;
 
@@ -92,27 +116,97 @@ const CreateListing = () => {
       );
 
       const data = await response.json();
-      // Data returned from google api, use optional chain and nullish coelescing 
-geolocation.lat= data.results[0]?.geometry.location.lat??0
-geolocation.lng= data.results[0]?.geometry.location.lng??0
-location=data.status === 'ZERO_RESULTS'? undefined: data.results[0]?.formatted_address
+      // Data returned from google api, use optional chain and nullish coelescing
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+      location =
+        data.status === 'ZERO_RESULTS'
+          ? undefined
+          : data.results[0]?.formatted_address;
 
-if(location === undefined || location.includes('undefined')){
-  setLoading(false)
-  toast.error('Please enter a correct address')
-  return
-}
-
-} else {
+      if (location === undefined || location.includes('undefined')) {
+        setLoading(false);
+        toast.error('Please enter a correct address');
+        return;
+      }
+    } else {
       // if not geolocation is not enabled, enter manually
       geolocation.lat = latitude;
       geolocation.lng = longitude;
       location = address;
     }
+    // * ==============================================================
+
+    // *STORE IMAGE LOOP TO FIREBASE, Uploading images, sizes must be less than 2MB
+    // * ==============================================================
+    const storeImage = async (image) => {
+      // want to return new promise
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+
+        const storageRef = ref(storage, 'images/' + fileName);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        // Register three observers:
+        // 1. 'state_changed' observer, called any time the state changes
+        // 2. Error observer, called on failure
+        // 3. Completion observer, called on successful completion
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            // if promise fails
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+              console.log('File available at', downloadURL);
+            });
+          }
+        );
+      });
+    };
+    // End of storageImage function
+    // Need to execute and get all images into an array from promises
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch(() => {
+      // The catch runs based off the reject(error) occurring above here
+      setLoading(false);
+      toast.error('Images not uploaded');
+      return;
+    });
+    console.log(imgUrls);
+    //* ==============================================================
+
     setLoading(false);
   };
+  // * ==============================================================
+  // * ==============================================================
 
   // *ON MUTATE EVENT HANDLER
+  // * ==============================================================
+  // * ==============================================================
+
   const onMutate = (e) => {
     // When input or button clicked, checking the string value={true} true and setting to actual true or false
     // set boolean null
@@ -144,6 +238,9 @@ if(location === undefined || location.includes('undefined')){
       }));
     }
   };
+  // * ==============================================================
+  // * ==============================================================
+
   if (loading) {
     return <Spinner />;
   }
@@ -351,7 +448,8 @@ if(location === undefined || location.includes('undefined')){
           )}
           <label className='formLabel'>Images</label>
           <p className='imagesInfo'>
-            The first image will be the cover (max 6).
+            The first image will be the cover (max 6) and must be less than 2MB
+            in size.
           </p>
           <input
             className='formInputFile'
