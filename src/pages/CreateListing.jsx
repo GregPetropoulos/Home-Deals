@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // For the image upload from storage
-// ----------------------------------
+// *----------------------------------
 import {
   getStorage,
   ref,
@@ -10,7 +10,9 @@ import {
 } from 'firebase/storage';
 import { db } from '../config/firebase.config';
 import { v4 as uuidv4 } from 'uuid';
-// -------------------------------------
+// *-------------------------------------
+
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -73,9 +75,9 @@ const CreateListing = () => {
     };
   }, [isMounted]);
 
+  // * ==============================================================
+  // * ==============================================================
   //  *ONSUBMIT-Image upload to firebase, geocode from lat/long into address
-  // * ==============================================================
-  // * ==============================================================
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -83,8 +85,8 @@ const CreateListing = () => {
     setLoading(true);
 
     console.log(formData);
-    //* PRICE CHECKS
     // * ==============================================================
+    //* PRICE CHECKS
 
     if (discountedPrice >= regularPrice) {
       setLoading(false);
@@ -93,8 +95,8 @@ const CreateListing = () => {
     }
     // * ==============================================================
 
-    //* IMAGE CHECKS
     // * ==============================================================
+    //* IMAGE CHECKS
     // images is an object by state and array by database
     if (images.length > 6) {
       setLoading(false);
@@ -103,8 +105,8 @@ const CreateListing = () => {
     }
     // * ==============================================================
 
-    //*GEOCODING
     // * ==============================================================
+    //*GEOCODING
 
     let geolocation = {};
     let location;
@@ -133,12 +135,11 @@ const CreateListing = () => {
       // if not geolocation is not enabled, enter manually
       geolocation.lat = latitude;
       geolocation.lng = longitude;
-      location = address;
     }
     // * ==============================================================
 
-    // *STORE IMAGE LOOP TO FIREBASE, Uploading images, sizes must be less than 2MB
     // * ==============================================================
+    // *STORE LOOP THROUGH IMAGE UPLOADS AND SEND TO FIRESTORE, Uploading images, sizes must be less than 2MB
     const storeImage = async (image) => {
       // want to return new promise
       return new Promise((resolve, reject) => {
@@ -198,14 +199,40 @@ const CreateListing = () => {
     console.log(imgUrls);
     //* ==============================================================
 
+    //* ==============================================================
+    // * OBJECT SUBMITTED/SAVED TO THE DATABASE
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp()
+    };
+
+    // For clean up in the formData we need to delete images and address
+    // Since we want the imgUrls not the images uploaded
+    // Since we want the `location` aka formatted address or location typed in address
+    formDataCopy.location = address
+    delete formDataCopy.images;
+    delete formDataCopy.address;
+    // if no offer delete the discountedPrice, since discounted price is the offer.
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+
+    // SAVE TO THE DB
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy)
+    setLoading(false);
+    toast.success('Listing Saved');
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`)
+  
+    //* ==============================================================
+
     setLoading(false);
   };
   // * ==============================================================
   // * ==============================================================
 
+  // * ==============================================================
+  // * ==============================================================
   // *ON MUTATE EVENT HANDLER
-  // * ==============================================================
-  // * ==============================================================
 
   const onMutate = (e) => {
     // When input or button clicked, checking the string value={true} true and setting to actual true or false

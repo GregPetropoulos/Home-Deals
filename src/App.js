@@ -14,7 +14,9 @@ import SignUp from './pages/SignUp';
 import Category from './pages/Category';
 import PrivateRoute from './components/PrivateRoute';
 import CreateListing from './pages/CreateListing';
+import Listing from './pages/Listing';
 // console.log(process.env.REACT_APP_API_KEY)
+
 
 function App() {
   return (
@@ -35,6 +37,7 @@ function App() {
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/create-listing' element={<CreateListing />} />
+          <Route path='/category/:categoryName/:listingId' element={<Listing />} />
           <Route path='/*' element={<h1>Error Page Does Not Exist</h1>} />
         </Routes>
         <Navbar />
