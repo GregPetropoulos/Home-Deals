@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import rentCategoryImage from '../assets/jpg/rentCategoryImage.jpg';
 import sellCategoryImage from '../assets/jpg/sellCategoryImage.jpg';
+import Slider from '../components/Slider';
 
 const Explorer = () => {
   return (
@@ -9,8 +10,7 @@ const Explorer = () => {
         <p className='pageHeader'>Explore</p>
       </header>
       <main>
-        {/* Slider */}
-
+        <Slider />
         <p className='exploreCategoryHeading'>Categories</p>
 
         <div className='exploreCategories'>
@@ -20,7 +20,7 @@ const Explorer = () => {
               alt='rent'
               className='exploreCategoryImg'
             />
-            <p className="exploreCategoryName">Places For Rent</p>
+            <p className='exploreCategoryName'>Places For Rent</p>
           </Link>
           <Link to='/category/sale'>
             <img
@@ -28,7 +28,7 @@ const Explorer = () => {
               alt='sale'
               className='exploreCategoryImg'
             />
-            <p className="exploreCategoryName">Places For Sale</p>
+            <p className='exploreCategoryName'>Places For Sale</p>
           </Link>
         </div>
       </main>
