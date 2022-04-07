@@ -110,6 +110,8 @@ const Profiles = () => {
       toast.success('Successfully deleted the listing');
     }
   };
+
+  const onEdit =listingId=> navigate(`/edit-listing/${listingId}`)
   console.log("listings",listings);
   return (
     <div className='profile'>
@@ -167,6 +169,7 @@ const Profiles = () => {
                   listing={listing.data}
                   id={listing.id}
                   onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
                 />
               ))}
             </ul>
