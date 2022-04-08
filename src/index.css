@@ -9,7 +9,10 @@ html::-webkit-scrollbar {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #f2f4f8;
+  /* background-color: #f2f4f8; */
+  /* background-color: rgba(165, 178, 202,.7);*/
+  background: rgb(96,90,205);
+  background: linear-gradient(0deg, rgba(96,90,205,1) 0%, rgba(145,163,198,1) 100%);
   margin: 0;
   box-sizing: border-box;
 }
@@ -417,6 +420,7 @@ button {
   height: 100px;
   border-radius: 1.5rem;
   object-fit: cover;
+  margin-top: 1.4rem;
 }
 @media (min-width: 1024px) {
   .categoryListingImg {
@@ -439,6 +443,7 @@ button {
   font-size: 0.7rem;
   opacity: 0.8;
   margin-bottom: 0;
+  margin-top: 1.4rem;
 }
 
 .categoryListingName {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../config/firebase.config';
@@ -15,8 +15,12 @@ const Slider = () => {
   const [listings, setListings] = useState(null);
 
   const navigate = useNavigate();
+  const isMounted = useRef(true);
 
   useEffect(() => {
+if(isMounted){
+
+
     const fetchListing = async () => {
       const listingRef = collection(db, 'listings');
       const q = query(listingRef, orderBy('timestamp', 'desc'), limit(5));
@@ -37,7 +41,13 @@ const Slider = () => {
       setLoading(false);
     };
     fetchListing();
-  }, []);
+}
+ //*CLEANUP
+ return () => {
+  isMounted.current = false;
+};
+
+  }, [isMounted]);
 
   if (loading) {
     return <Spinner />;

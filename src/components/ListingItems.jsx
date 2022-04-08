@@ -5,8 +5,6 @@ import bedIcon from '../assets/svg/bedIcon.svg';
 import bathtubIcon from '../assets/svg/bathtubIcon.svg';
 
 const ListingItems = ({ listing, id, onEdit, onDelete }) => {
-  console.log('listing', listing);
-  console.log('onClick', onDelete);
 
   return (
     <li className='categoryListing'>

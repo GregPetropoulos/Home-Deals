@@ -112,7 +112,7 @@ const Profiles = () => {
   };
 
   const onEdit =listingId=> navigate(`/edit-listing/${listingId}`)
-  console.log("listings",listings);
+  // console.log("listings",listings);
   return (
     <div className='profile'>
       <header className='profileHeader'>
@@ -133,7 +133,6 @@ const Profiles = () => {
             {changeDetails ? 'done' : 'change'}
           </p>
         </div>
-        ˜
         <div className='profileCard'>
           <form className=''>
             <input

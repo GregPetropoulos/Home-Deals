@@ -132,7 +132,7 @@ if(listing && listing.userRef !== auth.currentUser.uid){
 
     setLoading(true);
 
-    console.log(formData);
+    // console.log(formData);
     // * ==============================================================
     //* PRICE CHECKS
 
@@ -244,7 +244,7 @@ if(listing && listing.userRef !== auth.currentUser.uid){
       toast.error('Images not uploaded');
       return;
     });
-    console.log(imgUrls);
+    // console.log(imgUrls);
     //* ==============================================================
 
     //* ==============================================================

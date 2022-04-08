@@ -84,7 +84,7 @@ const CreateListing = () => {
 
     setLoading(true);
 
-    console.log(formData);
+    // console.log(formData);
     // * ==============================================================
     //* PRICE CHECKS
 
@@ -196,7 +196,7 @@ const CreateListing = () => {
       toast.error('Images not uploaded');
       return;
     });
-    console.log(imgUrls);
+    // console.log(imgUrls);
     //* ==============================================================
 
     //* ==============================================================
