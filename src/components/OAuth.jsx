@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 import googleIcon from '../assets/svg/googleIcon.svg';
 

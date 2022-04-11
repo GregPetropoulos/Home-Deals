@@ -8,7 +8,7 @@ import {
   uploadBytesResumable,
   getDownloadURL
 } from 'firebase/storage';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 import { v4 as uuidv4 } from 'uuid';
 // *-------------------------------------
 

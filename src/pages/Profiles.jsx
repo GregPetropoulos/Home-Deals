@@ -18,7 +18,7 @@ import {
   orderBy,
   deleteDoc
 } from 'firebase/firestore';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 
 const Profiles = () => {
   const [listings, setListings] = useState(null);

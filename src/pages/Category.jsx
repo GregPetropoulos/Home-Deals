@@ -13,7 +13,7 @@ import {
   startAfter
 } from 'firebase/firestore';
 
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';

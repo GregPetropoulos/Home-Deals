@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 // gets the email
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 
 
 

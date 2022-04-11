@@ -13,7 +13,7 @@ import {
 
 // https://firebase.google.com/docs/firestore/manage-data/add-data
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';

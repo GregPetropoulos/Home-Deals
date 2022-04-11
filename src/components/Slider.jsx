@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
-import { db } from '../config/firebase.config';
+import { db } from '../firebase.config';
 import Spinner from './Spinner';
 
 // Swiper
